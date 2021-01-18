@@ -40,6 +40,7 @@ def print_to_pdf(contents_list, book_name, time_wait=2, separated_suffix='PDFs')
             page_num = PdfFileReader(f).getNumPages()
             section["page_num"] = page_num
 
+    driver.quit()
     return contents_list
 
 
