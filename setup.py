@@ -13,7 +13,7 @@ def get_required_packages():
 
 setuptools.setup(
     name='html2pdf_bookdown',
-    version='0.1.0',
+    version='0.1.1',
     description='Fetch and convert HTML to PDF for eBooks published with Bookdown',
     long_description=get_readme(),
     long_description_content_type='text/markdown',
