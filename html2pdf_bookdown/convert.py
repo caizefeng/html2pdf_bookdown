@@ -7,7 +7,7 @@ import base64
 import os
 import time
 
-from PyPDF2 import PdfFileReader, PdfFileMerger
+from PyPDF2 import PdfReader, PdfMerger
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from tqdm import tqdm
@@ -37,7 +37,7 @@ def print_to_pdf(contents_list, book_name, time_wait=2, separated_suffix='PDFs')
         section["single_pdf_path"] = single_pdf_path
         with open(single_pdf_path, "wb+") as f:
             f.write(base64.b64decode(pdf['data']))
-            page_num = PdfFileReader(f).getNumPages()
+            page_num = len(PdfReader(f).pages)
             section["page_num"] = page_num
 
     driver.quit()
@@ -45,16 +45,16 @@ def print_to_pdf(contents_list, book_name, time_wait=2, separated_suffix='PDFs')
 
 
 def merge_and_bookmark(contents_list, book_name):
-    pdfmerger = PdfFileMerger()
+    pdfmerger = PdfMerger()
     page_idx = 0
     last_level = -1
-    level_list = [pdfmerger.addBookmark(book_name, page_idx)]  # Like a depth meter
+    level_list = [pdfmerger.add_outline_item(book_name, page_idx)]  # Like a depth meter
     print("Merging and bookmarking PDFs:")
     for section in tqdm(contents_list):
         for _ in range(last_level - section["level"] + 1):
             level_list.pop()
         parent = level_list[-1]
-        level_list.append(pdfmerger.addBookmark(section["name"], page_idx, parent))
+        level_list.append(pdfmerger.add_outline_item(section["name"], page_idx, parent))
         pdfmerger.append(open(section["single_pdf_path"], 'rb'))
 
         page_idx += section["page_num"]
